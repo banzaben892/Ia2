@@ -1,66 +1,72 @@
 name: Build APK with Auto-Update
 
 on:
-  push:
-    branches: [main]
-  workflow_dispatch:
+push:
+branches:
+- main
+workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+build:
+runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+steps:
+  - name: Checkout repository
+    uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
+  - name: Setup Node.js
+    uses: actions/setup-node@v4
+    with:
+      node-version: 20
 
-      - name: Setup Java 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 17
+  - name: Setup Java 17
+    uses: actions/setup-java@v4
+    with:
+      distribution: temurin
+      java-version: 17
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+  - name: Setup Android SDK
+    uses: android-actions/setup-android@v3
 
-      - name: Install Bubblewrap
-        run: npm install -g @bubblewrap/cli
+  - name: Install Bubblewrap
+    run: npm install -g @bubblewrap/cli
 
-      - name: Generate Keystore
-        run: |
-          keytool -genkeypair \
-            -alias release \
-            -keyalg RSA \
-            -keysize 2048 \
-            -validity 10000 \
-            -keystore release.keystore \
-            -storepass android \
-            -keypass android \
-            -dname "CN=MiniChatGPT,O=MiniChatGPT,C=FR"
+  - name: Debug Environment
+    run: |
+      java -version
+      echo "JAVA_HOME=$JAVA_HOME"
+      bubblewrap --version
 
-      - name: Initialize Bubblewrap
-        run: |
-          bubblewrap init \
-            --manifest-url=https://TON-USER.github.io/mini-chatgpt/manifest.json \
-            --directory=android \
-            --jdk-path="$JAVA_HOME"
+  - name: Generate Keystore
+    run: |
+      keytool -genkeypair \
+        -alias release \
+        -keyalg RSA \
+        -keysize 2048 \
+        -validity 10000 \
+        -keystore release.keystore \
+        -storepass android \
+        -keypass android \
+        -dname "CN=MiniChatGPT,O=MiniChatGPT,C=FR"
 
-      - name: Build APK
-        run: |
-          cd android
-          bubblewrap build
+  - name: Initialize Bubblewrap
+    run: |
+      printf 'n\n' | bubblewrap init \
+        --manifest-url=https://banzaben892.github.io/Ia2/manifest.json \
+        --directory=android \
+        --jdk-path="$JAVA_HOME"
 
-      - name: Find APK
-        run: |
-          find android -name "*.apk"
+  - name: Build APK
+    run: |
+      cd android
+      bubblewrap build
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: MiniChatGPT-APK
-          path: |
-            android/**/*.apk
+  - name: Find APK Files
+    run: |
+      find android -type f -name "*.apk"
+
+  - name: Upload APK
+    uses: actions/upload-artifact@v4
+    with:
+      name: MiniChatGPT-APK
+      path: android/**/*.apk
