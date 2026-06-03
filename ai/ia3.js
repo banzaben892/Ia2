@@ -44,7 +44,7 @@ class IA3 {
     if (sentiment === 'positif') {
       response = this.makeWarmer(response);
     } else if (sentiment === 'négatif') {
-      response = this.makeSofter(response);
+      response = this.makeEncouraging(response);
     }
 
     const emojiMap = {
@@ -69,7 +69,8 @@ class IA3 {
       response += ' ' + emojiMap[intentKey];
     }
 
-    if (Math.random() > 0.5 && intent !== 'farewell' && intent !== 'unknown') {
+    // Ne pas ajouter de relance si c'est un fallback (évite les doubles questions)
+    if (Math.random() > 0.5 && intent !== 'farewell' && intent !== 'unknown' && !response.includes('Peux-tu')) {
       response += ' ' + this.pickRandom(this.variants.default);
     }
 
@@ -89,14 +90,17 @@ class IA3 {
     return text;
   }
 
-  makeSofter(text) {
-    if (!text.match(/😔|😟|🙁/)) {
-      return text + ' Je suis là si tu veux parler.';
-    }
-    return text;
+  makeEncouraging(text) {
+    const encouragements = [
+      'Je vois. Et si on voyait le bon côté des choses ?',
+      'Chaque problème a une solution. Nous allons la trouver ensemble.',
+      'C\'est en parlant qu\'on avance. Continue, je suis là.',
+      'Parfois, il suffit d\'en parler pour que ça aille mieux.'
+    ];
+    return text + ' ' + encouragements[Math.floor(Math.random() * encouragements.length)];
   }
 
   pickRandom(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
   }
-}
+      }
