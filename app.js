@@ -1,7 +1,7 @@
 // === SYSTÈME D'AUTO-UPDATE ===
 async function checkForUpdate() {
   try {
-    const response = await fetch('https://api.github.com/repos/TON-USER/mini-chatgpt/releases/latest');
+    const response = await fetch('https://banzaben892.github.io/Ia2/releases/latest');
     const release = await response.json();
     const latestVersion = release.tag_name;
     const currentVersion = localStorage.getItem('appVersion') || 'v0';
