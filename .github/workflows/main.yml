@@ -31,20 +31,39 @@ jobs:
       - name: Install Bubblewrap
         run: npm install -g @bubblewrap/cli
 
-      - name: Verify
+      - name: Verify environment
         run: |
           java -version
           echo $JAVA_HOME
 
-      # 👉 IMPORTANT: on ne fait PLUS bubblewrap init ici
+      - name: Create Bubblewrap project (non-interactive)
+        run: |
+          mkdir android
+          cd android
+
+          bubblewrap init \
+            --manifest-url=https://banzaben892.github.io/Ia2/manifest.json \
+            --directory=. \
+            --name="MiniChatGPT" \
+            --packageId="com.minichatgpt.app" \
+            --skipPwaValidation \
+            --offline
+
+      - name: Accept JDK automatically
+        run: |
+          cd android
+          printf "No\n" | bubblewrap init || true
 
       - name: Build APK
         run: |
           cd android
           bubblewrap build
 
+      - name: Find APK
+        run: find android -name "*.apk"
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: MiniChatGPT-APK
-          path: android/app/build/outputs/**/*.apk
+          path: android/**/*.apk
