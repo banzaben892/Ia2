@@ -11,6 +11,7 @@
   <link rel="apple-touch-icon" href="assets/icons/icon-192x192.png">
   <title>Mini ChatGPT</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
 <body>
   <div class="chat-container">
@@ -19,6 +20,13 @@
       <button id="installBtn" style="display:none; background:white; border:none; border-radius:8px; padding:4px 12px; cursor:pointer; font-size:0.8rem;">📱 Installer</button>
     </div>
     <div class="chat-messages" id="chatMessages"></div>
+    <div class="toolbar">
+      <button id="pdfUploadBtn" title="Importer un PDF">📄</button>
+      <button id="webSearchBtn" title="Rechercher sur le web">🌐</button>
+      <button id="statsBtn" title="Statistiques">📊</button>
+      <button id="exportBtn" title="Exporter les connaissances">💾</button>
+      <input type="file" id="pdfInput" accept=".pdf" style="display:none">
+    </div>
     <div class="chat-input">
       <input type="text" id="userInput" placeholder="Écris ton message..." autofocus>
       <button onclick="sendMessage()">➤</button>
@@ -33,15 +41,15 @@
       document.getElementById('installBtn').style.display = 'inline-block';
       document.getElementById('installBtn').addEventListener('click', () => {
         deferredPrompt.prompt();
-        deferredPrompt.userChoice.then(() => {
-          document.getElementById('installBtn').style.display = 'none';
-        });
+        deferredPrompt.userChoice.then(() => { document.getElementById('installBtn').style.display = 'none'; });
       });
     });
   </script>
 
   <script src="data/storage.js"></script>
   <script src="data/memory.js"></script>
+  <script src="data/knowledge-base.js"></script>
+  <script src="data/web-search.js"></script>
   <script src="ai/rules.js"></script>
   <script src="ai/ia1.js"></script>
   <script src="ai/ia2.js"></script>
@@ -58,4 +66,4 @@
     }
   </script>
 </body>
-</html>
+                                 </html>
