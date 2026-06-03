@@ -7,10 +7,7 @@
   --bot-bg: #2a2a3c;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html, body {
-  height: 100%;
-  overflow: hidden;
-}
+html, body { height: 100%; overflow: hidden; }
 body {
   font-family: 'Segoe UI', system-ui, sans-serif;
   background: var(--bg);
@@ -31,12 +28,7 @@ body {
   overflow: hidden;
 }
 @media (min-width: 600px) {
-  .chat-container {
-    max-width: 600px;
-    height: 90vh;
-    border-radius: 12px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.3);
-  }
+  .chat-container { max-width: 600px; height: 90vh; border-radius: 12px; box-shadow: 0 0 20px rgba(0,0,0,0.3); }
 }
 .chat-header {
   background: var(--accent);
@@ -67,14 +59,28 @@ body {
   animation: fadeIn 0.3s forwards;
 }
 @keyframes fadeIn { to { opacity: 1; } }
-.user {
-  align-self: flex-end;
-  background: var(--user-bg);
+.user { align-self: flex-end; background: var(--user-bg); }
+.bot { align-self: flex-start; background: var(--bot-bg); }
+.toolbar {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 8px;
+  background: var(--surface);
+  flex-shrink: 0;
 }
-.bot {
-  align-self: flex-start;
-  background: var(--bot-bg);
+.toolbar button {
+  background: var(--accent);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #1e1e2e;
+  transition: transform 0.2s;
 }
+.toolbar button:hover { transform: scale(1.1); }
 .chat-input {
   display: flex;
   padding: 0.8rem;
@@ -103,3 +109,12 @@ body {
   cursor: pointer;
   flex-shrink: 0;
 }
+.search-result {
+  background: #3a3a52;
+  border-left: 3px solid var(--accent);
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+.search-result .source { font-size: 0.7rem; opacity: 0.7; margin-top: 5px; }
