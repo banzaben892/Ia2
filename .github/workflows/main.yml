@@ -31,39 +31,17 @@ jobs:
       - name: Install Bubblewrap
         run: npm install -g @bubblewrap/cli
 
-      - name: Verify Environment
+      - name: Verify
         run: |
           java -version
-          echo "JAVA_HOME=$JAVA_HOME"
+          echo $JAVA_HOME
 
-      - name: Clean Android folder
-        run: rm -rf android
-
-      - name: Generate Keystore
-        run: |
-          keytool -genkeypair \
-            -alias release \
-            -keyalg RSA \
-            -keysize 2048 \
-            -validity 10000 \
-            -keystore release.keystore \
-            -storepass android \
-            -keypass android \
-            -dname "CN=MiniChatGPT,O=MiniChatGPT,C=FR"
-
-      - name: Initialize Bubblewrap (non-interactive)
-        run: |
-          printf "n\nMiniChatGPT\ncom.minichatgpt.app\n" | bubblewrap init \
-            --manifest-url=https://banzaben892.github.io/Ia2/manifest.json \
-            --directory=android
+      # 👉 IMPORTANT: on ne fait PLUS bubblewrap init ici
 
       - name: Build APK
         run: |
           cd android
-          ./gradlew assembleRelease
-
-      - name: Find APK
-        run: find android -type f -name "*.apk"
+          bubblewrap build
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
