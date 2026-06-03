@@ -35,9 +35,8 @@ jobs:
         run: |
           java -version
           echo "JAVA_HOME=$JAVA_HOME"
-          bubblewrap --version
 
-      - name: Clean Previous Android Project
+      - name: Clean Android folder
         run: rm -rf android
 
       - name: Generate Keystore
@@ -52,18 +51,11 @@ jobs:
             -keypass android \
             -dname "CN=MiniChatGPT,O=MiniChatGPT,C=FR"
 
-      - name: Initialize Bubblewrap
+      - name: Initialize Bubblewrap (non-interactive)
         run: |
-          bubblewrap init \
-            --manifest=https://banzaben892.github.io/Ia2/manifest.json \
-            --directory=android <<EOF
-          MiniChatGPT
-          com.minichatgpt.app
-          android
-          android
-          release
-          release.keystore
-          EOF
+          printf "n\nMiniChatGPT\ncom.minichatgpt.app\n" | bubblewrap init \
+            --manifest-url=https://banzaben892.github.io/Ia2/manifest.json \
+            --directory=android
 
       - name: Build APK
         run: |
@@ -71,7 +63,7 @@ jobs:
           ./gradlew assembleRelease
 
       - name: Find APK
-        run: find android -name "*.apk"
+        run: find android -type f -name "*.apk"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
