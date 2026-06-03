@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur d'Icônes - Mini ChatGPT</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #1e1e2e;
+            color: #e0e0e0;
+            padding: 20px;
+            text-align: center;
+        }
+        canvas { display: none; }
+        .icon-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin: 30px 0;
+        }
+        .icon-card {
+            background: #2a2a3c;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        button {
+            background: #7aa2f7;
+            color: #1e1e2e;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            transform: scale(1.05);
+            transition: 0.2s;
+        }
+        .size-label {
+            font-size: 12px;
+            margin-top: 5px;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎨 Générateur d'Icônes Mini ChatGPT</h1>
+    <p>Clique sur le bouton pour générer toutes les icônes (72px à 512px)</p>
+    
+    <button onclick="generateAllIcons()">📦 Générer toutes les icônes</button>
+    
+    <div class="icon-preview" id="preview"></div>
+    
+    <canvas id="canvas"></canvas>
+
+    <script>
+        function drawIcon(size) {
+            const canvas = document.getElementById('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            
+            const radius = size * 0.2;
+            ctx.fillStyle = '#7aa2f7';
+            ctx.beginPath();
+            ctx.roundRect(size * 0.05, size * 0.05, size * 0.9, size * 0.9, radius);
+            ctx.fill();
+            
+            const centerX = size / 2;
+            const centerY = size / 2;
+            
+            ctx.fillStyle = '#1e1e2e';
+            ctx.beginPath();
+            ctx.arc(centerX, centerY * 0.7, size * 0.2, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = '#7aa2f7';
+            ctx.beginPath();
+            ctx.arc(centerX - size * 0.06, centerY * 0.62, size * 0.04, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(centerX + size * 0.06, centerY * 0.62, size * 0.04, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.strokeStyle = '#7aa2f7';
+            ctx.lineWidth = size * 0.02;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY * 0.75, size * 0.08, 0.1 * Math.PI, 0.9 * Math.PI);
+            ctx.stroke();
+            
+            ctx.fillStyle = '#1e1e2e';
+            ctx.fillRect(centerX - size * 0.12, centerY * 0.95, size * 0.24, size * 0.25);
+            
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.roundRect(centerX + size * 0.1, centerY * 0.2, size * 0.35, size * 0.25, size * 0.1);
+            ctx.fill();
+            
+            ctx.fillStyle = '#1e1e2e';
+            ctx.font = `bold ${size * 0.06}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.fillText('Chat', centerX + size * 0.27, centerY * 0.34);
+            ctx.font = `${size * 0.05}px Arial`;
+            ctx.fillText('GPT', centerX + size * 0.27, centerY * 0.42);
+            
+            return canvas.toDataURL('image/png');
+        }
+
+        function generateAllIcons() {
+            const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
+            const previewDiv = document.getElementById('preview');
+            previewDiv.innerHTML = '';
+            
+            sizes.forEach(size => {
+                const dataUrl = drawIcon(size);
+                const link = document.createElement('a');
+                link.download = `icon-${size}x${size}.png`;
+                link.href = dataUrl;
+                
+                const card = document.createElement('div');
+                card.className = 'icon-card';
+                
+                const img = document.createElement('img');
+                img.src = dataUrl;
+                img.width = 128;
+                img.height = 128;
+                img.style.borderRadius = '20px';
+                
+                const label = document.createElement('div');
+                label.className = 'size-label';
+                label.textContent = `${size}x${size}px`;
+                
+                const downloadBtn = document.createElement('button');
+                downloadBtn.textContent = '💾 Télécharger';
+                downloadBtn.style.padding = '8px 16px';
+                downloadBtn.style.fontSize = '12px';
+                downloadBtn.onclick = () => link.click();
+                
+                card.appendChild(img);
+                card.appendChild(label);
+                card.appendChild(downloadBtn);
+                previewDiv.appendChild(card);
+            });
+            
+            alert('✅ Toutes les icônes ont été générées !\n\nClique sur "Télécharger" pour chaque taille.');
+        }
+
+        if (!CanvasRenderingContext2D.prototype.roundRect) {
+            CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
+                if (typeof r === 'number') r = {tl: r, tr: r, br: r, bl: r};
+                this.beginPath();
+                this.moveTo(x + r.tl, y);
+                this.lineTo(x + w - r.tr, y);
+                this.quadraticCurveTo(x + w, y, x + w, y + r.tr);
+                this.lineTo(x + w, y + h - r.br);
+                this.quadraticCurveTo(x + w, y + h, x + w - r.br, y + h);
+                this.lineTo(x + r.bl, y + h);
+                this.quadraticCurveTo(x, y + h, x, y + h - r.bl);
+                this.lineTo(x, y + r.tl);
+                this.quadraticCurveTo(x, y, x + r.tl, y);
+                this.closePath();
+                return this;
+            };
+        }
+
+        window.onload = () => generateAllIcons();
+    </script>
+</body>
+</html>
